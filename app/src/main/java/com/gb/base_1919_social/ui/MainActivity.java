@@ -1,8 +1,10 @@
-package com.gb.base_1919_social;
+package com.gb.base_1919_social.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.gb.base_1919_social.R;
 
 public class MainActivity extends AppCompatActivity {
 

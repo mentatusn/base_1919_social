@@ -1,4 +1,4 @@
-package com.gb.base_1919_social;
+package com.gb.base_1919_social.ui;
 
 import android.os.Bundle;
 
@@ -11,8 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.gb.base_1919_social.R;
+import com.gb.base_1919_social.repository.LocalRepositoryImpl;
 
 
 public class SocialNetworkFragment extends Fragment implements OnItemClickListener {
@@ -38,7 +40,8 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
 
     void initAdapter(){
         socialNetworkAdapter = new SocialNetworkAdapter();
-        socialNetworkAdapter.setData(getData());
+        LocalRepositoryImpl localRepositoryImpl = new LocalRepositoryImpl(requireContext().getResources());
+        socialNetworkAdapter.setData(localRepositoryImpl.init());
         socialNetworkAdapter.setOnItemClickListener(SocialNetworkFragment.this);
     }
     void initRecycler(View view){
