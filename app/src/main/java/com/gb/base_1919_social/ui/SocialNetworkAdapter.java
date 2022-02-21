@@ -3,9 +3,9 @@ package com.gb.base_1919_social.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -58,13 +58,13 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
         private TextView textViewTitle;
         private TextView textViewDescription;
         private ImageView imageView;
-        private CheckBox checkBox;
+        private ToggleButton like;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = (TextView) itemView.findViewById(R.id.title);
             textViewDescription = (TextView) itemView.findViewById(R.id.description);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
-            checkBox = (CheckBox) itemView.findViewById(R.id.like);
+            like = (ToggleButton) itemView.findViewById(R.id.like);
             /*textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -80,7 +80,7 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
             textViewTitle.setText(content.getTitle());
             textViewDescription.setText(content.getDescription());
             imageView.setImageResource(content.getPicture());
-            checkBox.setChecked(content.isLike());
+            like.setChecked(content.isLike());
         }
 
     }
