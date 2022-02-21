@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
-public class SocialNetworkFragment extends Fragment {
+public class SocialNetworkFragment extends Fragment implements OnItemClickListener {
 
     SocialNetworkAdapter socialNetworkAdapter;
 
@@ -37,6 +39,7 @@ public class SocialNetworkFragment extends Fragment {
     void initAdapter(){
         socialNetworkAdapter = new SocialNetworkAdapter();
         socialNetworkAdapter.setData(getData());
+        socialNetworkAdapter.setOnItemClickListener(SocialNetworkFragment.this);
     }
     void initRecycler(View view){
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
@@ -48,5 +51,11 @@ public class SocialNetworkFragment extends Fragment {
     String[] getData(){
         String[] data = getResources().getStringArray(R.array.titles);
         return data;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        String[] data = getData();
+        Toast.makeText(requireContext()," Нажали на "+data[position],Toast.LENGTH_SHORT).show();
     }
 }
