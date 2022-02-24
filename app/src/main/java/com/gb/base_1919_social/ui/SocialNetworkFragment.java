@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,12 +67,38 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
                 return true;
             }
         }
-
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        requireActivity().getMenuInflater().inflate(R.menu.card_menu,menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        int menuPosition = socialNetworkAdapter.getMenuPosition();
+        switch (item.getItemId()){
+            case R.id.action_update:{
+                data.updateCardData(menuPosition,new CardData("Заголовок обновленной карточки "+data.size(),
+                        "Описание обновленной карточки "+data.size(),data.getCardData(menuPosition).getPicture(),false));
+                socialNetworkAdapter.notifyItemChanged(menuPosition);
+                return true;
+            }
+            case R.id.action_delete:{
+                data.deleteCardData(menuPosition);
+                socialNetworkAdapter.notifyItemRemoved(menuPosition);
+                return true;
+            }
+        }
+        return super.onContextItemSelected(item);
+    }
+
+
+
     void initAdapter(){
-        socialNetworkAdapter = new SocialNetworkAdapter();
+        socialNetworkAdapter = new SocialNetworkAdapter(this);
         data = new LocalRepositoryImpl(requireContext().getResources()).init();
         socialNetworkAdapter.setData(data);
         socialNetworkAdapter.setOnItemClickListener(SocialNetworkFragment.this);
