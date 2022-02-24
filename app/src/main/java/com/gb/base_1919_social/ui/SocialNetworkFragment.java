@@ -10,18 +10,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.gb.base_1919_social.R;
+import com.gb.base_1919_social.repository.CardData;
+import com.gb.base_1919_social.repository.CardsSource;
 import com.gb.base_1919_social.repository.LocalRepositoryImpl;
 
 
 public class SocialNetworkFragment extends Fragment implements OnItemClickListener {
 
     SocialNetworkAdapter socialNetworkAdapter;
-
+    CardsSource data;
     public static SocialNetworkFragment newInstance() {
         SocialNetworkFragment fragment = new SocialNetworkFragment();
         return fragment;
@@ -37,12 +42,38 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
         super.onViewCreated(view, savedInstanceState);
         initAdapter();
         initRecycler(view);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.cards_menu,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_add:{
+                data.addCardData(new CardData("Заголовок новой карточки "+data.size(),
+                        "Описание новой карточки "+data.size(),R.drawable.nature1,false));
+                socialNetworkAdapter.notifyItemInserted(data.size()-1);
+                return true;
+            }
+            case R.id.action_clear:{
+                data.clearCardsData();
+                socialNetworkAdapter.notifyDataSetChanged();
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     void initAdapter(){
         socialNetworkAdapter = new SocialNetworkAdapter();
-        LocalRepositoryImpl localRepositoryImpl = new LocalRepositoryImpl(requireContext().getResources());
-        socialNetworkAdapter.setData(localRepositoryImpl.init());
+        data = new LocalRepositoryImpl(requireContext().getResources()).init();
+        socialNetworkAdapter.setData(data);
         socialNetworkAdapter.setOnItemClickListener(SocialNetworkFragment.this);
     }
     void initRecycler(View view){

@@ -12,11 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.gb.base_1919_social.R;
 import com.gb.base_1919_social.repository.CardData;
-import com.gb.base_1919_social.repository.CardSource;
+import com.gb.base_1919_social.repository.CardsSource;
 
 public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdapter.MyViewHolder> {
 
-    private CardSource cardSource;
+    private CardsSource cardsSource;
 
     OnItemClickListener onItemClickListener;
 
@@ -24,13 +24,13 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
-    public void setData(CardSource cardSource) {
-        this.cardSource = cardSource;
+    public void setData(CardsSource cardsSource) {
+        this.cardsSource = cardsSource;
         notifyDataSetChanged(); // команда адаптеру отрисовать все(!) полученные данные
     }
 
-    SocialNetworkAdapter(CardSource cardSource){
-        this.cardSource = cardSource;
+    SocialNetworkAdapter(CardsSource cardsSource){
+        this.cardsSource = cardsSource;
     }
     SocialNetworkAdapter(){
     }
@@ -45,12 +45,12 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bindContentWithLayout(cardSource.getCardData(position));
+        holder.bindContentWithLayout(cardsSource.getCardData(position));
     }
 
     @Override
     public int getItemCount() {
-        return cardSource.size();
+        return cardsSource.size();
     }
 
 
