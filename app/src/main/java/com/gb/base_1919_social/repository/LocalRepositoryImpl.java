@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import com.gb.base_1919_social.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class LocalRepositoryImpl implements CardsSource {
@@ -25,7 +26,7 @@ public class LocalRepositoryImpl implements CardsSource {
         TypedArray pictures = resources.obtainTypedArray(R.array.pictures);
 
         for(int i=0;i<titles.length;i++){
-            dataSource.add(new CardData(titles[i],descriptions[i],pictures.getResourceId(i,0),false));
+            dataSource.add(new CardData(titles[i],descriptions[i],pictures.getResourceId(i,0),false, Calendar.getInstance().getTime()));
         }
         return this;
     }

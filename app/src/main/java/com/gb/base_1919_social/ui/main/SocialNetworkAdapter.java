@@ -1,4 +1,4 @@
-package com.gb.base_1919_social.ui;
+package com.gb.base_1919_social.ui.main;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,7 +108,7 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
         public void bindContentWithLayout(CardData content){
 
             textViewTitle.setText(content.getTitle());
-            textViewDescription.setText(content.getDescription());
+            textViewDescription.setText(content.getDescription()+" "+content.getDate());
             imageView.setImageResource(content.getPicture());
             like.setChecked(content.isLike());
         }

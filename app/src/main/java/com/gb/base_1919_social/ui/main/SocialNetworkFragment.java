@@ -1,4 +1,4 @@
-package com.gb.base_1919_social.ui;
+package com.gb.base_1919_social.ui.main;
 
 import android.os.Bundle;
 
@@ -20,9 +20,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.gb.base_1919_social.R;
+import com.gb.base_1919_social.publisher.Observer;
 import com.gb.base_1919_social.repository.CardData;
 import com.gb.base_1919_social.repository.CardsSource;
 import com.gb.base_1919_social.repository.LocalRepositoryImpl;
+import com.gb.base_1919_social.ui.MainActivity;
+import com.gb.base_1919_social.ui.editor.CardFragment;
+
+import java.util.Calendar;
 
 
 public class SocialNetworkFragment extends Fragment implements OnItemClickListener {
@@ -30,6 +35,7 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
     SocialNetworkAdapter socialNetworkAdapter;
     CardsSource data;
     RecyclerView recyclerView;
+
     public static SocialNetworkFragment newInstance() {
         SocialNetworkFragment fragment = new SocialNetworkFragment();
         return fragment;
@@ -61,7 +67,7 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
         switch (item.getItemId()) {
             case R.id.action_add: {
                 data.addCardData(new CardData("Заголовок новой карточки " + data.size(),
-                        "Описание новой карточки " + data.size(), R.drawable.nature1, false));
+                        "Описание новой карточки " + data.size(), R.drawable.nature1, false, Calendar.getInstance().getTime()));
                 socialNetworkAdapter.notifyItemInserted(data.size() - 1);
                 recyclerView.smoothScrollToPosition(data.size() - 1);
                 //recyclerView.scrollToPosition(data.size() - 1);
@@ -87,9 +93,17 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
         int menuPosition = socialNetworkAdapter.getMenuPosition();
         switch (item.getItemId()) {
             case R.id.action_update: {
-                data.updateCardData(menuPosition, new CardData("Заголовок обновленной карточки " + data.size(),
-                        "Описание обновленной карточки " + data.size(), data.getCardData(menuPosition).getPicture(), false));
-                socialNetworkAdapter.notifyItemChanged(menuPosition);
+
+                Observer observer = new Observer() {
+                    @Override
+                    public void receiveMessage(CardData cardData) {
+                        ((MainActivity) requireActivity()).getPublisher().unsubscribe(this);
+                        data.updateCardData(menuPosition, cardData);
+                        socialNetworkAdapter.notifyItemChanged(menuPosition);
+                    }
+                };
+                ((MainActivity) requireActivity()).getPublisher().subscribe(observer);
+                ((MainActivity) requireActivity()).getNavigation().addFragment(CardFragment.newInstance(data.getCardData(menuPosition)), true);
                 return true;
             }
             case R.id.action_delete: {
@@ -136,4 +150,6 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
         String[] data = getData();
         Toast.makeText(requireContext(), " Нажали на " + data[position], Toast.LENGTH_SHORT).show();
     }
+
+
 }
