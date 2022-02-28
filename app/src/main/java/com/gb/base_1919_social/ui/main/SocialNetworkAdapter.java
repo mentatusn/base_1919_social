@@ -12,12 +12,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gb.base_1919_social.R;
-import com.gb.base_1919_social.repository.CardData;
-import com.gb.base_1919_social.repository.CardsSource;
+import com.gb.base_1919_social.repository.PostData;
+import com.gb.base_1919_social.repository.PostsSource;
 
 public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdapter.MyViewHolder> {
 
-    private CardsSource cardsSource;
+    private PostsSource postsSource;
 
     OnItemClickListener onItemClickListener;
 
@@ -32,13 +32,13 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
-    public void setData(CardsSource cardsSource) {
-        this.cardsSource = cardsSource;
+    public void setData(PostsSource postsSource) {
+        this.postsSource = postsSource;
         notifyDataSetChanged(); // команда адаптеру отрисовать все(!) полученные данные
     }
 
-    SocialNetworkAdapter(CardsSource cardsSource){
-        this.cardsSource = cardsSource;
+    SocialNetworkAdapter(PostsSource postsSource){
+        this.postsSource = postsSource;
     }
     SocialNetworkAdapter(){
     }
@@ -56,12 +56,12 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bindContentWithLayout(cardsSource.getCardData(position));
+        holder.bindContentWithLayout(postsSource.getCardData(position));
     }
 
     @Override
     public int getItemCount() {
-        return cardsSource.size();
+        return postsSource.size();
     }
 
 
@@ -105,7 +105,7 @@ public class SocialNetworkAdapter extends RecyclerView.Adapter<SocialNetworkAdap
             });*/
         }
             // связываем контент с макетом
-        public void bindContentWithLayout(CardData content){
+        public void bindContentWithLayout(PostData content){
 
             textViewTitle.setText(content.getTitle());
             textViewDescription.setText(content.getDescription()+" "+content.getDate());

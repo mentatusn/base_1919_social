@@ -12,26 +12,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.gb.base_1919_social.R;
-import com.gb.base_1919_social.repository.CardData;
+import com.gb.base_1919_social.repository.PostData;
 import com.gb.base_1919_social.ui.MainActivity;
 
 import java.util.Calendar;
-import java.util.Date;
 
 
 public class CardFragment extends Fragment {
 
 
 
-    CardData cardData;
+    PostData postData;
 
-    public static CardFragment newInstance(CardData cardData) {
+    public static CardFragment newInstance(PostData postData) {
         CardFragment fragment = new CardFragment();
         Bundle args = new Bundle();
-        args.putParcelable("cardData", cardData);
+        args.putParcelable("postData", postData);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,12 +46,12 @@ public class CardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if(getArguments()!=null){ // FIXME HW нужен рефактор. Добавить initView(), setContent(), setListeners(), extractDate(), save()
-            cardData = getArguments().getParcelable("cardData");
-            ((EditText)view.findViewById(R.id.inputTitle)).setText(cardData.getTitle());
-            ((EditText)view.findViewById(R.id.inputDescription)).setText(cardData.getDescription());
+            postData = getArguments().getParcelable("postData");
+            ((EditText)view.findViewById(R.id.inputTitle)).setText(postData.getTitle());
+            ((EditText)view.findViewById(R.id.inputDescription)).setText(postData.getDescription());
 
             calendar = Calendar.getInstance();
-            calendar.setTime(cardData.getDate());
+            calendar.setTime(postData.getDate());
             ((DatePicker) view.findViewById(R.id.inputDate)).init(calendar.get(Calendar.YEAR)-1,
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH),
@@ -71,8 +69,8 @@ public class CardFragment extends Fragment {
             view.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View it) {
-                    cardData.setTitle(((EditText)view.findViewById(R.id.inputTitle)).getText().toString());
-                    cardData.setDescription(((EditText)view.findViewById(R.id.inputDescription)).getText().toString());
+                    postData.setTitle(((EditText)view.findViewById(R.id.inputTitle)).getText().toString());
+                    postData.setDescription(((EditText)view.findViewById(R.id.inputDescription)).getText().toString());
 
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
                         DatePicker datePicker= ((DatePicker) view.findViewById(R.id.inputDate));
@@ -80,8 +78,8 @@ public class CardFragment extends Fragment {
                         calendar.set(Calendar.MONTH,datePicker.getMonth());
                         calendar.set(Calendar.DAY_OF_MONTH,datePicker.getDayOfMonth());
                     }
-                    cardData.setDate(calendar.getTime());
-                    ((MainActivity) requireActivity()).getPublisher().sendMessage(cardData);
+                    postData.setDate(calendar.getTime());
+                    ((MainActivity) requireActivity()).getPublisher().sendMessage(postData);
                     ((MainActivity) requireActivity()).getSupportFragmentManager().popBackStack();
                 }
             });

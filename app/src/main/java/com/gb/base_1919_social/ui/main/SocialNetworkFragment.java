@@ -1,5 +1,7 @@
 package com.gb.base_1919_social.ui.main;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,12 +19,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.gb.base_1919_social.R;
 import com.gb.base_1919_social.publisher.Observer;
-import com.gb.base_1919_social.repository.CardData;
-import com.gb.base_1919_social.repository.CardsSource;
+import com.gb.base_1919_social.repository.PostData;
+import com.gb.base_1919_social.repository.PostsSource;
 import com.gb.base_1919_social.repository.LocalRepositoryImpl;
 import com.gb.base_1919_social.ui.MainActivity;
 import com.gb.base_1919_social.ui.editor.CardFragment;
@@ -33,7 +36,7 @@ import java.util.Calendar;
 public class SocialNetworkFragment extends Fragment implements OnItemClickListener {
 
     SocialNetworkAdapter socialNetworkAdapter;
-    CardsSource data;
+    PostsSource data;
     RecyclerView recyclerView;
 
     public static SocialNetworkFragment newInstance() {
@@ -54,6 +57,64 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
         initAdapter();
         initRecycler(view);
         setHasOptionsMenu(true);
+        initRadioGroup(view);
+
+    }
+
+    private void initRadioGroup(View view) {
+        view.findViewById(R.id.sourceArrays).setOnClickListener(listener);
+        view.findViewById(R.id.sourceSP).setOnClickListener(listener);
+        view.findViewById(R.id.sourceGF).setOnClickListener(listener);
+
+        switch (getCurrentSource()) {
+            case SOURCE_ARRAY:
+                ((RadioButton) view.findViewById(R.id.sourceArrays)).setChecked(true);
+                break;
+            case SOURCE_SP:
+                ((RadioButton) view.findViewById(R.id.sourceSP)).setChecked(true);
+                break;
+            case SOURCE_GF:
+                ((RadioButton) view.findViewById(R.id.sourceGF)).setChecked(true);
+                break;
+        }
+
+    }
+
+    static final int SOURCE_ARRAY = 1;
+    static final int SOURCE_SP = 2;
+    static final int SOURCE_GF = 3;
+
+    static String KEY_SP_S1 = "key_1";
+    static String KEY_SP_S1_CELL_C1 = "s1_cell1";
+
+    View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+
+            switch (view.getId()) {
+                case R.id.sourceArrays:
+                    setCurrentSource(SOURCE_ARRAY);
+                    break;
+                case R.id.sourceSP:
+                    setCurrentSource(SOURCE_SP);
+                    break;
+                case R.id.sourceGF:
+                    setCurrentSource(SOURCE_GF);
+                    break;
+            }
+        }
+    };
+
+    void setCurrentSource(int currentSource) {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(KEY_SP_S1, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(KEY_SP_S1_CELL_C1, currentSource);
+        editor.apply();
+    }
+
+    int getCurrentSource() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences(KEY_SP_S1, Context.MODE_PRIVATE);
+        return sharedPreferences.getInt(KEY_SP_S1_CELL_C1, SOURCE_ARRAY);
     }
 
     @Override
@@ -66,7 +127,7 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
-                data.addCardData(new CardData("Заголовок новой карточки " + data.size(),
+                data.addCardData(new PostData("Заголовок новой карточки " + data.size(),
                         "Описание новой карточки " + data.size(), R.drawable.nature1, false, Calendar.getInstance().getTime()));
                 socialNetworkAdapter.notifyItemInserted(data.size() - 1);
                 recyclerView.smoothScrollToPosition(data.size() - 1);
@@ -96,7 +157,7 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
 
                 Observer observer = new Observer() {
                     @Override
-                    public void receiveMessage(CardData cardData) {
+                    public void receiveMessage(PostData cardData) {
                         ((MainActivity) requireActivity()).getPublisher().unsubscribe(this);
                         data.updateCardData(menuPosition, cardData);
                         socialNetworkAdapter.notifyItemChanged(menuPosition);
@@ -118,6 +179,17 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
 
     void initAdapter() {
         socialNetworkAdapter = new SocialNetworkAdapter(this);
+        switch (getCurrentSource()) {
+            case SOURCE_ARRAY:
+                data = new LocalRepositoryImpl(requireContext().getResources()).init();
+                break;
+            case SOURCE_SP:
+                //data = new LocalSharedPreferencesRepositoryImpl(requireContext().getResources()).init();
+                break;
+            case SOURCE_GF:
+                //data = new RemoteFireStoreRepositoryImpl(requireContext().getResources()).init();
+                break;
+        }
         data = new LocalRepositoryImpl(requireContext().getResources()).init();
         socialNetworkAdapter.setData(data);
         socialNetworkAdapter.setOnItemClickListener(SocialNetworkFragment.this);

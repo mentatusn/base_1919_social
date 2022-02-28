@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class LocalRepositoryImpl implements CardsSource {
+public class LocalRepositoryImpl implements PostsSource {
 
-    private List<CardData> dataSource;
+    private List<PostData> dataSource;
     private Resources resources;
 
 
     public LocalRepositoryImpl(Resources resources){
-        dataSource = new ArrayList<CardData>();
+        dataSource = new ArrayList<PostData>();
         this.resources = resources;
     }
 
@@ -26,7 +26,7 @@ public class LocalRepositoryImpl implements CardsSource {
         TypedArray pictures = resources.obtainTypedArray(R.array.pictures);
 
         for(int i=0;i<titles.length;i++){
-            dataSource.add(new CardData(titles[i],descriptions[i],pictures.getResourceId(i,0),false, Calendar.getInstance().getTime()));
+            dataSource.add(new PostData(titles[i],descriptions[i],pictures.getResourceId(i,0),false, Calendar.getInstance().getTime()));
         }
         return this;
     }
@@ -37,12 +37,12 @@ public class LocalRepositoryImpl implements CardsSource {
     }
 
     @Override
-    public List<CardData> getAllCardsData() {
+    public List<PostData> getAllCardsData() {
         return dataSource;
     }
 
     @Override
-    public CardData getCardData(int position) {
+    public PostData getCardData(int position) {
         return dataSource.get(position);
     }
 
@@ -52,8 +52,8 @@ public class LocalRepositoryImpl implements CardsSource {
     }
 
     @Override
-    public void addCardData(CardData cardData) {
-        dataSource.add(cardData);
+    public void addCardData(PostData postData) {
+        dataSource.add(postData);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class LocalRepositoryImpl implements CardsSource {
     }
 
     @Override
-    public void updateCardData(int position, CardData newCardData) {
-        dataSource.set(position,newCardData);
+    public void updateCardData(int position, PostData newPostData) {
+        dataSource.set(position, newPostData);
     }
 }

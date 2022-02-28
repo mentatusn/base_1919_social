@@ -1,6 +1,6 @@
 package com.gb.base_1919_social.publisher;
 
-import com.gb.base_1919_social.repository.CardData;
+import com.gb.base_1919_social.repository.PostData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +18,9 @@ public class Publisher {
         observers.remove(observer);
     }
 
-    public void sendMessage(CardData cardData){
+    public void sendMessage(PostData postData){
         for(Observer observer:observers){
-            observer.receiveMessage(cardData);
+            observer.receiveMessage(postData);
         }
     }
 }
