@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.gb.base_1919_social.R;
 import com.gb.base_1919_social.publisher.Observer;
+import com.gb.base_1919_social.repository.LocalSharedPreferencesRepositoryImpl;
 import com.gb.base_1919_social.repository.PostData;
 import com.gb.base_1919_social.repository.PostsSource;
 import com.gb.base_1919_social.repository.LocalRepositoryImpl;
@@ -54,11 +55,27 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initAdapter();
+        setupSource();
         initRecycler(view);
         setHasOptionsMenu(true);
         initRadioGroup(view);
 
+    }
+    void setupSource(){
+        switch (getCurrentSource()) {
+            case SOURCE_ARRAY:
+                data = new LocalRepositoryImpl(requireContext().getResources()).init();
+                initAdapter();
+                break;
+            case SOURCE_SP:
+                data = new LocalSharedPreferencesRepositoryImpl(requireContext().getSharedPreferences(LocalSharedPreferencesRepositoryImpl.KEY_SP_2,Context.MODE_PRIVATE)).init();
+                initAdapter();
+                break;
+            case SOURCE_GF:
+                //data = new RemoteFireStoreRepositoryImpl(requireContext().getResources()).init();
+                initAdapter();
+                break;
+        }
     }
 
     private void initRadioGroup(View view) {
@@ -90,7 +107,6 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-
             switch (view.getId()) {
                 case R.id.sourceArrays:
                     setCurrentSource(SOURCE_ARRAY);
@@ -102,6 +118,7 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
                     setCurrentSource(SOURCE_GF);
                     break;
             }
+            setupSource();
         }
     };
 
@@ -178,19 +195,9 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
 
 
     void initAdapter() {
+        if(socialNetworkAdapter==null)
         socialNetworkAdapter = new SocialNetworkAdapter(this);
-        switch (getCurrentSource()) {
-            case SOURCE_ARRAY:
-                data = new LocalRepositoryImpl(requireContext().getResources()).init();
-                break;
-            case SOURCE_SP:
-                //data = new LocalSharedPreferencesRepositoryImpl(requireContext().getResources()).init();
-                break;
-            case SOURCE_GF:
-                //data = new RemoteFireStoreRepositoryImpl(requireContext().getResources()).init();
-                break;
-        }
-        data = new LocalRepositoryImpl(requireContext().getResources()).init();
+
         socialNetworkAdapter.setData(data);
         socialNetworkAdapter.setOnItemClickListener(SocialNetworkFragment.this);
     }
