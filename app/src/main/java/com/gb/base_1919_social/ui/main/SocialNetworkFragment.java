@@ -25,16 +25,19 @@ import android.widget.Toast;
 import com.gb.base_1919_social.R;
 import com.gb.base_1919_social.publisher.Observer;
 import com.gb.base_1919_social.repository.LocalSharedPreferencesRepositoryImpl;
+import com.gb.base_1919_social.repository.PictureIndexConverter;
 import com.gb.base_1919_social.repository.PostData;
 import com.gb.base_1919_social.repository.PostsSource;
 import com.gb.base_1919_social.repository.LocalRepositoryImpl;
+import com.gb.base_1919_social.repository.RemoteFireStoreRepositoryImpl;
+import com.gb.base_1919_social.repository.RemoteFireStoreResponse;
 import com.gb.base_1919_social.ui.MainActivity;
 import com.gb.base_1919_social.ui.editor.CardFragment;
 
 import java.util.Calendar;
 
 
-public class SocialNetworkFragment extends Fragment implements OnItemClickListener {
+public class SocialNetworkFragment extends Fragment implements OnItemClickListener, RemoteFireStoreResponse {
 
     SocialNetworkAdapter socialNetworkAdapter;
     PostsSource data;
@@ -72,7 +75,7 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
                 initAdapter();
                 break;
             case SOURCE_GF:
-                //data = new RemoteFireStoreRepositoryImpl(requireContext().getResources()).init();
+                data = new RemoteFireStoreRepositoryImpl().init(this);
                 initAdapter();
                 break;
         }
@@ -144,11 +147,20 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
-                data.addCardData(new PostData("Заголовок новой карточки " + data.size(),
-                        "Описание новой карточки " + data.size(), R.drawable.nature1, false, Calendar.getInstance().getTime()));
-                socialNetworkAdapter.notifyItemInserted(data.size() - 1);
-                recyclerView.smoothScrollToPosition(data.size() - 1);
-                //recyclerView.scrollToPosition(data.size() - 1);
+
+                Observer observer = new Observer() {
+                    @Override
+                    public void receiveMessage(PostData postData) {
+                        ((MainActivity) requireActivity()).getPublisher().unsubscribe(this);
+                        data.addCardData( postData);
+                        socialNetworkAdapter.notifyItemInserted(data.size() - 1);
+                        recyclerView.smoothScrollToPosition(data.size() - 1);
+                    }
+                };
+                ((MainActivity) requireActivity()).getPublisher().subscribe(observer);
+                ((MainActivity) requireActivity()).getNavigation().addFragment(CardFragment.newInstance(new PostData("",
+                        "", PictureIndexConverter.getPictureByIndex(PictureIndexConverter.randomPictureIndex()), false, Calendar.getInstance().getTime())), true);
+
                 return true;
             }
             case R.id.action_clear: {
@@ -231,4 +243,8 @@ public class SocialNetworkFragment extends Fragment implements OnItemClickListen
     }
 
 
+    @Override
+    public void initialized(PostsSource postsSource) {
+        initAdapter();
+    }
 }

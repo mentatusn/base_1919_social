@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "946788204074",
-    "project_id": "base-1919-social",
-    "storage_bucket": "base-1919-social.appspot.com"
+    "project_number": "1008477029321",
+    "project_id": "base-1919-social-test",
+    "storage_bucket": "base-1919-social-test.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:946788204074:android:6593c151d7b1f928d90d53",
+        "mobilesdk_app_id": "1:1008477029321:android:ba29ca1e9ad2d4e84c9e18",
         "android_client_info": {
           "package_name": "com.gb.base_1919_social"
         }
       },
       "oauth_client": [
         {
-          "client_id": "946788204074-shbq7sr21scekt3qqrf8ddqftp7ngivn.apps.googleusercontent.com",
+          "client_id": "1008477029321-fe4ia0tfs1q5tipi69ca7s1euv5suqv4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gb.base_1919_social",
+            "certificate_hash": "425b6d86593993ae77eb6d4068ee6771ee777dc2"
+          }
+        },
+        {
+          "client_id": "1008477029321-m00fhp3t4eiraeju78r5vaemtffu4rkr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDpTPcyBDDMsGb7dN0luls6OKabq5Y4hcM"
+          "current_key": "AIzaSyAOz5wBeEIJFR4u0t3A9RTaW9jzRZzt9zo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "946788204074-shbq7sr21scekt3qqrf8ddqftp7ngivn.apps.googleusercontent.com",
+              "client_id": "1008477029321-m00fhp3t4eiraeju78r5vaemtffu4rkr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
